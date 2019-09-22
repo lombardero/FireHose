@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container">
+    <div class="row text-center">
+        <button class="btn btn-primary" id="fetchWeather">Fetch Current Weather</button>
+    </div>
+    <div class="hidden text-center" id="hiddenData">
+            <p>
+                <b>Temperature:</b> 20<br>
+                <b>Relative Humidity:</b> 20%<br>
+                <b>Wind:</b> 6<br>
+                <b>Rain:</b> 0<br>
+            </p>
+            <div>
+                <button class="btn btn-primary" id="testWeather">Test Conditions?</button>
+            </div>
+    </div>
+    <div class="hidden text-centre" id="result">
+        <h3 class="text-center"><b>Today's Forest Fire Risk:</b><b style="color: red"> HIGH</b></h3>
+    </div>
+    <div class="col-md-5"></div>
+    <div class="hidden text-centre" id="drone">
+            <a href="/predict_drone" class="btn btn-primary" style="margin-left: 29px;">Launch Drones?</a>
+    </div>
+    <div class="col-md-4"></div>
+</div>
+<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+<script>
+    $("#fetchWeather").click(function(){
+        $("#hiddenData").removeClass("hidden")
+    })
+
+    $("#testWeather").click(function(){
+        url = "/predict"
+        $.post(
+            url,
+            null,
+            function(data, status){
+                if (data.val == 1){
+                    $("#result").removeClass("hidden")
+                    phoneNotification = "/send_notification"
+                    $.post(
+                        phoneNotification,
+                        null,
+                        function(data, status){
+                            $("#drone").removeClass("hidden")
+                        }
+                    )
+                }
+            }
+        )
+    })
+</script>
+{% endblock %}

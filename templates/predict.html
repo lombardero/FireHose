@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block content %}
+<div>
+    <h2 class="text-center" id="processing">Processing...</h2>
+</div>
+<div class="col-md-6 hidden" id="img1">
+    <img src="{{url_for('static', filename='ex1.jpg')}}" width="600px" height="400px;">
+    <h3 id="img1Res"></h3>
+    <p id="watsonImg1"></p>
+</div>
+
+<div class="col-md-6 hidden" id="img2">
+    <img src="{{url_for('static', filename='ex0.jpg')}}" height="400px;">
+    <h3 id="img2Res"></h3>
+    <p id="watsonImg2"></p>
+    <button class="btn btn-primary hidden" id="notify">Notify people</button>
+</div>
+<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+<script>
+    // function fetchAndReveal(filename){
+    //     console.log(filename)
+    //     if (filename == "ex0"){
+    //         idHidden = "img2"
+    //         idRes = "img2Res"
+    //         idWatson = "watsonImg2"
+    //     } else {
+    //         idHidden = "img1"
+    //         idRes = "img1Res"
+    //         idWatson = "watsonImg1"
+    //     }
+    //     url = "/id_forest"
+    //     $("#" + idHidden).removeClass("hidden")
+    //     $.ajax({
+    //         url: url,
+    //         type: 'post',
+    //         dataType: 'json',
+    //         data: JSON.stringify({"filename": filename}),
+    //         contentType: 'application/json',
+    //         success: function (data) {
+    //             console.log(data)
+    //             $("#"+ idRes).text("Type: " + data.class + " Score: " + data.score)
+    //             $("#"+ idWatson).text("Powered By Watson")
+    //         },
+    //     });
+    // }
+    url = "/id_forest"
+    setTimeout(() => {
+        $("#img1").removeClass("hidden")
+        $.ajax({
+            url: url,
+            type: 'post',
+            dataType: 'json',
+            data: JSON.stringify({"filename": "ex1"}),
+            contentType: 'application/json',
+            success: function (data) {
+                console.log(data)
+                $("#img1Res").text("Type: " + data.class + " Score: " + data.score)
+                $("#watsonImg1").text("Powered By Watson")
+            },
+        });
+    }, 2000);
+    setTimeout(() => {
+        $("#img2").removeClass("hidden")
+        $.ajax({
+            url: url,
+            type: 'post',
+            dataType: 'json',
+            data: JSON.stringify({"filename": "ex0"}),
+            contentType: 'application/json',
+            success: function (data) {
+                console.log(data)
+                $("#img2Res").text("Type: " + data.class + " Score: " + data.score)
+                $("#watsonImg2").text("Powered By Watson")
+                $("#processing").addClass("hidden")
+                $("#notify").removeClass("hidden")
+            },
+        });
+    }, 5000);
+
+    $("#notify").click(function(){
+        url = '/notify'
+        $.ajax({
+            url: url,
+            type: 'post',
+            contentType: 'application/json',
+            success: function (data) {
+                console.log(data)
+                alert("Successfully alerted people")
+            },
+        });
+    })
+</script>
+{% endblock %}
